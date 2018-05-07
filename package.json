@@ -1,0 +1,13 @@
+{
+  "name": "pdfparsing",
+  "version": "1.0.0",
+  "description": "https://github.com/algolia/crawler/issues/961",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "memwatch-next": "^0.3.0",
+    "pdfjs-dist": "^2.0.489",
+    "tika-text-extract": "https://github.com/adrienjoly/tika-text-extract.git"
+  }
+}
