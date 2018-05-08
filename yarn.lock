@@ -329,9 +329,9 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"tika-text-extract@https://github.com/adrienjoly/tika-text-extract.git":
-  version "2.1.0"
-  resolved "https://github.com/adrienjoly/tika-text-extract.git#31b7df7927102b376615a2b1398ffb419dae529f"
+tika-text-extract@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/tika-text-extract/-/tika-text-extract-2.2.0.tgz#9341f62d2e0f166977829945a72c09b1bae2defc"
   dependencies:
     debug "^3.1.0"
     get-stream "^3.0.0"
