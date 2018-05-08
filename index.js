@@ -2,6 +2,18 @@ const memwatch = require('memwatch-next');
 
 const filename = './en.netscaler-10.ns-rn-release-notes-10-wrapper-con.pdf';
 
+const promiseSerial = funcs =>
+  funcs.reduce((promise, func) =>
+    promise.then(result => func().then(Array.prototype.concat.bind(result))),
+    Promise.resolve([])
+  );
+
+// inspired from https://stackoverflow.com/a/20522307/592254
+// (note: page numbering starts at 1)
+const parsePageContent = (doc, pageNum) => doc.getPage(pageNum).then(page =>
+  page.getTextContent().then(textContent => textContent.items.map(o => o.str).join('\n'))
+);
+
 const parsers = [
   {
     name: 'PDF.js',
@@ -10,17 +22,15 @@ const parsers = [
     },
     parse(filename) {
       const loadingTask = this.pdfjsLib.getDocument(filename);
-      return loadingTask.promise.then(doc => {
-        // inspired from https://stackoverflow.com/a/20522307/592254
-        // (note: page numbering starts at 1)
-        const parsePageContent = pageNum => doc.getPage(pageNum).then(page =>
-          page.getTextContent().then(textContent => textContent.items.map(o => o.str).join('\n'))
-        );
+      return loadingTask.promise.then(async doc => {
+        const text = (await promiseSerial([...Array(doc.numPages)].map(
+          (_, pageIdx) => () => parsePageContent(doc, pageIdx + 1)
+        ))).join('\n');
         // from https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.js
         return doc.getMetadata().then(async data => ({
           info: data.info,
           metadata: data.metadata && data.metadata.getAll(),
-          text: await parsePageContent(1),
+          text,
         }));
       });
     }
