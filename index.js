@@ -10,21 +10,18 @@ const parsers = [
     },
     parse(filename) {
       const loadingTask = this.pdfjsLib.getDocument(filename);
-      return loadingTask.promise.then(function (doc) {
+      return loadingTask.promise.then(doc => {
+        // inspired from https://stackoverflow.com/a/20522307/592254
+        // (note: page numbering starts at 1)
+        const parsePageContent = pageNum => doc.getPage(pageNum).then(page =>
+          page.getTextContent().then(textContent => textContent.items.map(o => o.str).join('\n'))
+        );
         // from https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.js
-        return doc.getMetadata().then(data => {
-          // inspired from https://stackoverflow.com/a/20522307/592254
-          // (note: page numbering starts at 1)
-          return doc.getPage(1).then(function(page){
-            return page.getTextContent().then(function(textContent){
-              return {
-                info: data.info,
-                metadata: data.metadata && data.metadata.getAll(),
-                text: textContent.items.map(o => o.str).join('\n'),
-              };
-            });
-          });
-        });
+        return doc.getMetadata().then(async data => ({
+          info: data.info,
+          metadata: data.metadata && data.metadata.getAll(),
+          text: await parsePageContent(1),
+        }));
       });
     }
   },
