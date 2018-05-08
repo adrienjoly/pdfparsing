@@ -6,8 +6,8 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "memwatch-next": "^0.3.0",
-    "pdfjs-dist": "^2.0.489",
+    "memwatch-next": "0.3.0",
+    "pdfjs-dist": "2.0.489",
     "tika-text-extract": "2.2.0"
   }
 }
